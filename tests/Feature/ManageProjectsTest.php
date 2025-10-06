@@ -27,20 +27,14 @@ class ManageProjectsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->signIn();
-        // $user = User::factory()->create();
+
         $this->get('/projects/create')->assertStatus(200);
-        $attributes = [
-            'title' => $this->faker->sentence(),
-            'description' => $this->faker->sentence(),
-            'notes' => 'General notes here'
-        ];
-        // $this->actingAs($user) 
-        //      ->post('/projects', $attributes);
         // $attributes = [
-        //     'title' => $attributes['title'],
-        //     'description' => $attributes['description'],
-        //     'owner_id' => $user->id,
+        //     'title' => $this->faker->sentence(),
+        //     'description' => $this->faker->sentence(),
+        //     'notes' => 'General notes here'
         // ];
+    $attributes=Project::factory()->raw(['owner_id'=>auth()->id()]);
         $response = $this->post('/projects', $attributes);
         $project = Project::where($attributes)->first();
         $response->assertRedirect($project->path());
@@ -61,6 +55,26 @@ class ManageProjectsTest extends TestCase
         $this->signIn();
         $attributes = Project::factory()->raw(['title' => '']);
         $this->post('/projects', $attributes)->assertSessionHasErrors('title');
+    }
+    public function test_unauthorized_users_cannot_delete_a_project(){
+      
+        $project =  Project::factory()->create();
+        $user = User::factory()->create();
+        $this->delete($project->path())
+        ->assertRedirect('/login');
+        $this->actingAs($user)->delete($project->path())->assertStatus(403);
+        $project->invite($user);
+        $this->actingAs($user)->delete($project->path())->assertStatus(403);
+
+    }
+     public function test_a_user_can_delete_a_project(){
+        $this->signIn();
+        $this->withoutExceptionHandling();
+        $project =  Project::factory()->create();
+        $this->actingAs($project->owner)
+        ->delete($project->path())
+        ->assertRedirect('/projects');
+        $this->assertDatabaseMissing('projects',$project->only('id'));
     }
     public function test_a_user_can_update_a_project(){
         $this->signIn();
@@ -88,6 +102,17 @@ class ManageProjectsTest extends TestCase
         $project =  Project::factory()->create(['owner_id' => auth()->id()]);
         $this->get($project->path())->assertSee( $project->title);
             // ->assertSee(value: $project->description);
+    }
+    public function test_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard(){
+//given we're signed in
+$user=$this->signIn();
+//and we've been invited to a project that was not created  by us
+        $project =  Project::factory()->create();
+        $project->invite($user);
+//when i visit my dashboard
+// i should see that project
+$this->get('/projects')
+->assertSee($project->title);
     }
     public function test_an_authenticated_user_cannot_view_the_projects_of_other()
     {

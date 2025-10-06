@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bdc6d92507d397adf1c269ed49ec424d",
+    "content-hash": "b60e0ea658446a8bae20d15eddc815ee",
     "packages": [
         {
             "name": "brick/math",
@@ -641,6 +641,64 @@
                 }
             ],
             "time": "2024-07-20T21:45:45+00:00"
+        },
+        {
+            "name": "gravatarphp/gravatar",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gravatarphp/gravatar.git",
+                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gravatarphp/gravatar/zipball/21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
+                "reference": "21b760c50bcdddd8e65d3a4b3981b7ec9b3d44aa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.11",
+                "henrikbjorn/phpspec-code-coverage": "^2.0",
+                "phpspec/phpspec": "^2.5",
+                "sllh/php-cs-fixer-styleci-bridge": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gravatar\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Gravatar URL builder which is most commonly called as a Gravatar library",
+            "homepage": "http://gravatarphp.com",
+            "keywords": [
+                "avatar",
+                "gravatar",
+                "image",
+                "profile"
+            ],
+            "support": {
+                "issues": "https://github.com/gravatarphp/gravatar/issues",
+                "source": "https://github.com/gravatarphp/gravatar/tree/master"
+            },
+            "time": "2016-06-25T11:20:11+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

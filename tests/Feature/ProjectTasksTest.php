@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Database\Factories\ProjectFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -89,5 +90,13 @@ class ProjectTasksTest extends TestCase
         $project = auth()->user()->projects()->create(Project::factory()->raw());
         $attributes = Task::factory()->raw(['body' => '']);
         $this->post($project->path() . '/tasks', $attributes)->assertSessionHasErrors('body');
+    }
+     public function test_a_project_can_invite_a_user(): void
+    {
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
+        $project->invite($user);
+        $this->assertTrue($project->members->contains($user));
+    
     }
 }

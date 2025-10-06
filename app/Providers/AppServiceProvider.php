@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Observers\ProjectObserver;
 use App\Observers\TaskObserver;
+use App\Policies\ProjectPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
        Project::observe(ProjectObserver::class);
         Task::observe(TaskObserver::class);
+   
 
     }
 }

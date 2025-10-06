@@ -11,16 +11,14 @@ class ProjectObserver
      */
     public function created(Project $project): void
     {
-         $project->recordActivity('created');
-  
-}
+        $project->recordActivity('created');
+    }
+   
     /**
      * Handle the Project "updated" event.
      */
     public function updated(Project $project): void
     {
-    $project->recordActivity('updated');
+        $project->recordActivity('updated');
     }
-
- 
 }

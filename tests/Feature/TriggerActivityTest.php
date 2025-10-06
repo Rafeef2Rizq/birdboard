@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Project;
 use App\Models\Task;
-use Database\Factories\ProjectFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class TriggerActivityTest extends TestCase
@@ -16,16 +14,23 @@ class TriggerActivityTest extends TestCase
   {
     $project = Project::factory()->create();
     $this->assertCount(1, $project->activity);
-    $this->assertEquals('created', $project->activity[0]->description);
+     tap($project->activity->last(),function($activity) {
+    $this->assertEquals('created', $activity->description);
+    $this->assertNull($activity->changes);
+
+    });
   }
   function test_updating_a_project()
   {
     $project = Project::factory()->create();
+    $originalTitle=$project->title;
     $project->update(['title' => 'changed']);
     $this->assertCount(2, $project->activity);
-    $this->assertEquals('updated', $project->activity->last()->description);
+    tap($project->activity->last(),function($activity) use($originalTitle){
+    $this->assertEquals('updated', $activity->description);
 
-    // $this->assertEquals('created',$project->activity[0]->description);
+    });
+
   }
   function test_createing_a_new_task()
   {
@@ -54,7 +59,7 @@ class TriggerActivityTest extends TestCase
 
     $this->assertCount(3, $project->activity);
     tap($project->activity->last(), function ($activity) {
-      $this->assertEquals('completed_task', $activity->last()->description);
+      $this->assertEquals('completed_task', $activity->description);
       $this->assertEquals('created_task', $activity->description);
       $this->assertInstanceOf(Task::class, $activity->subject);
     });

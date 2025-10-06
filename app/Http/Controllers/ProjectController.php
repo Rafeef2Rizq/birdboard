@@ -4,24 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use Gravatar;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
    public function index()
    {
-      $projects = auth()->user()->projects()->orderBy('updated_at', 'desc')->get();
-      return view('projects.index',  compact('projects'));
+      // Projects where user is owner OR member
+      $projects = Project::where('owner_id', auth()->id())
+         ->orWhereHas('members', function ($query) {
+            $query->where('user_id', auth()->id());
+         })
+         ->orderBy('updated_at', 'desc')
+         ->get();
+
+      return view('projects.index', compact('projects'));
    }
+
    public function create()
    {
       return view('projects.create');
    }
    public function show(Project $project)
    {
-      if (auth()->id() != $project->owner_id) {
-         abort(403);
-      }
+      $this->authorize('update', $project);
+
       return view('projects.show', data: compact('project'));
    }
    public function store(Request $request)
@@ -44,19 +52,29 @@ class ProjectController extends Controller
       // if (auth()->id() != $project->owner_id) {
       //    abort(403);
       // }
+      $this->authorize('update', $project);
       //validate
       $project->update($request->validated());
       return redirect($project->path());
    }
+   public function destroy(Project $project)
+   {
+      $this->authorize('manage', $project);
+      $project->delete();
+      return redirect('/projects');
+   }
 
    protected function validateRequest()
    {
-     return request()->validate(
+      return request()->validate(
          [
             'title' => 'sometimes|required',
-            'description' => 'sometimes|required',
-            'notes' => 'nullable'
+            'description' => 'sometimes|required|min:5',
+            'notes' => 'nullable|min:5'
          ]
       );
    }
+
+
+
 }

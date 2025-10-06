@@ -14,9 +14,6 @@ class TaskObserver
           $task->recordActivity('created_task');
     }
 
-   
-
-    
     /**
      * Handle the Task "force deleted" event.
      */

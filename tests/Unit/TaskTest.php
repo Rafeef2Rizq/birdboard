@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Models\Project;
 use App\Models\Task;
-use Database\Factories\TaskFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\TestCase;
 

@@ -8,10 +8,17 @@
                 <x-slot name="header">
                     <div class="flex justify-between item-center ">
                         <p class="font-semibold text-xl text-gray-800 leading-tight ">
-                            <a href="/projects"> {{ __('My projects') }}</a> / {{ $project->title }}
+                            <a href="/"> {{ __('My projects') }}</a> / {{ $project->title }}
                         </p>
-                        <a href="{{ $project->path().'/edit' }}"
-                            class="bg-blue text-black no-underline rounded-lg text-sm py-2 px-5 shadow">Edit project</a>
+                        <div class="flex items-center">
+                            @foreach ($project->members as $member )
+    <img src="{{ $project->gravatarUrl($member->email, 80) }}" alt="{{ $member->name }}'s avatar" class="rounded-full w-8 mr-2">
+                            @endforeach
+<img src="{{ $project->gravatarUrl($project->owner->email, 80) }}" alt="{{ $project->owner->name }}'s avatar" class="rounded-full w-8 mr-2">
+                            <a href="{{ $project->path().'/edit' }}"
+                                class="bg-blue text-black no-underline rounded-lg text-sm py-2 px-5 shadow">Edit project</a>
+                        </div>
+
                     </div>
                 </x-slot>
 
@@ -59,22 +66,22 @@
                                     <textarea name="notes" class="bg-white  p-5 rounded-lg shadow w-full  mb-3" style="min-height:200px"
                                         placeholder="Enter notes...">{{ $project->notes }}
                                     </textarea>
-                                    <button type="submit" class="button">Save</button>
+                                    <button type="submit" class="px-4 py-2 bg-blue-200">Save</button>
 
                                 </form>
-                                @if($errors->any())
-
-                                <div class="filed mt-6 text-red-600">
-                                    @foreach ($errors->all() as $error )
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                </div>
-                                @endif
+                         
+                                 @include('errors')
+                    
                             </div>
                         </div>
                         <div class="lg:w-1/4 px-3">
                             @include('components.card')
-                         @include('projects.activity.card')
+                            @include('projects.activity.card')
+                          @can('manage',$project)
+                              @include('projects.invite')
+                          @endcan
+
+                    
                         </div>
                     </div>
                 </main>
